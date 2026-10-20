@@ -9,6 +9,9 @@ on:
 jobs:
   image:
     uses: marx-org/pfire-workflows/.github/workflows/docker-image.yml@776b87d7f227954ac4301a69d41ef8783bc9bb33
+    with:
+      node_version: '22'
+      test_command: npm ci && npm run build
     secrets: inherit
     permissions:
       contents: write

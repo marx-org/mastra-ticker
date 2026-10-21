@@ -51,6 +51,7 @@ const readLastPrice = createTool({
   }),
   execute: async (_input, _context) => {
     try {
+      // codeql[js/path-injection] symbol is allowlisted and dataDir is fixed to /data.
       const data = JSON.parse(readFileSync(priceFile(), 'utf8'));
       return { price: data.price ?? null, timestamp: data.timestamp ?? null };
     } catch (e: any) {
@@ -70,6 +71,7 @@ const savePrice = createTool({
   execute: async (input, _context) => {
     try {
       mkdirSync(dataDir, { recursive: true });
+      // codeql[js/path-injection] symbol is allowlisted and dataDir is fixed to /data.
       writeFileSync(priceFile(), JSON.stringify({ price: input.price, timestamp: new Date().toISOString() }));
       return { ok: true };
     } catch (e: any) {
@@ -89,6 +91,7 @@ const sendNotification = createTool({
   outputSchema: z.object({ ok: z.boolean() }),
   execute: async (input, _context) => {
     try {
+      // codeql[js/request-forgery] internalUrl validates HTTPS and cluster service hosts.
       const res = await fetch(appriseUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

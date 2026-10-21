@@ -5,11 +5,24 @@ import { z } from 'zod';
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
-const symbol = process.env.TICKER_SYMBOL ?? 'SAP';
-const appriseUrl = process.env.APPRISE_URL ?? 'http://apprise.monitoring.svc.cluster.local:8000/notify/apprise';
-const firecrawlApiUrl = process.env.FIRECRAWL_API_URL ?? 'http://firecrawl-api.home.svc.cluster.local:3002';
+const configuredSymbol = process.env.TICKER_SYMBOL ?? 'SAP';
+if (!/^[A-Za-z0-9.-]{1,20}$/.test(configuredSymbol)) {
+  throw new Error('TICKER_SYMBOL must contain only letters, digits, dots, or hyphens');
+}
+const symbol = configuredSymbol;
+
+function internalUrl(value: string | undefined, fallback: string): string {
+  const url = new URL(value ?? fallback);
+  if (url.protocol !== 'http:' || !url.hostname.endsWith('.svc.cluster.local')) {
+    throw new Error('service URLs must target the internal cluster');
+  }
+  return url.href;
+}
+
+const appriseUrl = internalUrl(process.env.APPRISE_URL, 'http://apprise.monitoring.svc.cluster.local:8000/notify/apprise');
+const firecrawlApiUrl = internalUrl(process.env.FIRECRAWL_API_URL, 'http://firecrawl-api.home.svc.cluster.local:3002');
 const model = process.env.OPENROUTER_MODEL ?? 'openrouter/free';
-const dataDir = process.env.DATA_DIR ?? '/data';
+const dataDir = '/data';
 
 function priceFile() {
   return join(dataDir, `${symbol.toLowerCase()}-price.json`);

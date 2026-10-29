@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@mastra/core": "^1.79.0",
-    "@mastra/mcp": "^2.5.0",
+    "@mastra/mcp": "^2.6.0",
     "mastra": "^1.35.0"
   },
   "devDependencies": {

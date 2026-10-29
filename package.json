@@ -8,9 +8,9 @@
     "start": "node .mastra/output/index.mjs"
   },
   "dependencies": {
-    "@mastra/core": "^1.78.0",
-    "@mastra/mcp": "^2.4.1",
-    "mastra": "^1.34.2"
+    "@mastra/core": "^1.79.0",
+    "@mastra/mcp": "^2.5.0",
+    "mastra": "^1.35.0"
   },
   "devDependencies": {
     "@types/node": "^26",
